@@ -13,7 +13,7 @@ server.get('/api/users', (req, res) => {
       const users = await db.find();
       res.status(200).json(users);
     } catch(err) {
-      res.status(500).send({ error: "Something failed!" })
+      res.status(500).send({ error: "The users information could not be retrieved." })
     }
   })();
 })
@@ -22,9 +22,11 @@ server.get('/api/users/:id', (req, res) => {
   (async () => {
     try {
       const user = await db.findById(req.params.id);
-      res.status(200).json(user);
+      user
+      ? res.status(200).json(user)
+      : res.status(404).send({ message: "The user with the specified ID does not exist." });
     } catch(err) {
-      res.status(500).send({ error: "Something failed!" })
+      res.status(500).send({ error: "The user information could not be retrieved." })
     }
   })();
 })
