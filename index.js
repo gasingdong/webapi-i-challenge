@@ -36,7 +36,6 @@ server.get('/api/users/:id', (req, res) => {
 server.post('/api/users', (req, res) => {
   (async () => {
     try {
-      console.log(req);
       const { name, bio } = req.body;
       const timestamp = Date.now();
       if (name && bio) {
@@ -54,7 +53,22 @@ server.post('/api/users', (req, res) => {
       res.status(500).json({ error: "There was an error while saving the user to the database" });
     }
   })();
-})
+});
+
+server.delete('/api/users/:id', (req, res) => {
+  (async () => {
+    try {
+      const user = await db.findById(req.params.id);
+      if (!user) {
+        res.status(404).json({ message: "The user with the specified ID does not exist." });
+      }
+      await db.remove(user.id);
+      res.status(200).json(user);
+    } catch(err) {
+      res.status(500).json({ error: "The user could not be removed" });
+    }
+  })();
+});
 
 server.listen(5000, () => {
   console.log('Server running on http://localhost:5000/');
