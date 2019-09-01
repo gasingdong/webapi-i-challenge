@@ -13,7 +13,18 @@ server.get('/api/users', (req, res) => {
       const users = await db.find();
       res.status(200).json(users);
     } catch(err) {
-      res.status(500);
+      res.status(500).send({ error: "Something failed!" })
+    }
+  })();
+})
+
+server.get('/api/users/:id', (req, res) => {
+  (async () => {
+    try {
+      const user = await db.findById(req.params.id);
+      res.status(200).json(user);
+    } catch(err) {
+      res.status(500).send({ error: "Something failed!" })
     }
   })();
 })
