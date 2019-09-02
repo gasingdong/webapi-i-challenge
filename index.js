@@ -39,13 +39,17 @@ server.post('/api/users', (req, res) => {
       const { name, bio } = req.body;
       const timestamp = Date.now();
       if (name && bio) {
-        const newUser = await db.insert({
+        const newUser = {
           name,
           bio,
           created_at: timestamp,
           updated_at: timestamp,
+        }
+        const response = await db.insert(newUser);
+        res.status(201).json({
+          ...newUser,
+          id: response.id,
         });
-        res.status(201).json(newUser);
       } else {
         res.status(400).json({ errorMessage: "Please provide name and bio for the user." })
       }
